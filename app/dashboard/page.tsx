@@ -5,6 +5,10 @@ import { ReservationList } from "./reservation-list";
 
 export const dynamic = "force-dynamic";
 
+function getCurrentTimestamp() {
+  return Date.now();
+}
+
 export default async function DashboardPage() {
   const session = await getSession();
   if (!session) redirect("/login");
@@ -36,7 +40,7 @@ export default async function DashboardPage() {
     );
   }
 
-  const now = Date.now();
+  const now = getCurrentTimestamp();
   const upcoming = reservations.filter((item) => item.endTime.getTime() >= now && item.status !== "CANCELLED" && item.status !== "REJECTED");
   const past = reservations.filter((item) => item.endTime.getTime() < now || item.status === "CANCELLED" || item.status === "REJECTED");
   const serialize = (items: typeof reservations) => items.map((item) => ({ ...item, startTime: item.startTime.toISOString(), endTime: item.endTime.toISOString() }));
